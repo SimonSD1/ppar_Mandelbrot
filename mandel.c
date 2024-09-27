@@ -147,7 +147,7 @@ int main(int argc, char **argv)
     MPI_Comm_size(MPI_COMM_WORLD, &p);
 
     printf("il y a %d process disponible\n", p);
-    printf("mon rang est %d\n",my_rank);
+    printf("mon rang est %d\n", my_rank);
 
     /* Default values for the fractal */
     double xmin = -2; /* Domain of computation, in the complex plane */
@@ -187,9 +187,8 @@ int main(int argc, char **argv)
     /* Allocate memory for the output array */
     unsigned char *image = malloc(w * h);
 
-    unsigned char *petite_image = malloc(w * h/p);
-    
-    
+    unsigned char *petite_image = malloc(w * h / p);
+
     if (image == NULL)
     {
         perror("Error while allocating memory for array: ");
@@ -206,35 +205,57 @@ int main(int argc, char **argv)
 
     /* Process the grid point by point */
 
+    double y = ymin + ((ymax - ymin) / p) * my_rank;
 
-    double y = ymin+((ymax-ymin)/p)*my_rank;
-    
-    for (int i = 0; i < h/p; i++)
+    for (int i = 0; i < h / p; i++)
     {
         double x = xmin;
-        
-    
+
         for (int j = 0; j < w; j++)
         {
             petite_image[j + i * w] = xy2color(x, y, depth);
             x += xinc;
+            printf("calcul [%d][%d]\n", i, j);
         }
         y += yinc;
     }
-
-
+    
     /* stop timer */
     double end = wallclock_time();
     fprintf(stderr, "Total computing time: %g sec\n", end - start);
 
-    MPI_Gather(petite_image,3840/6*3840, MPI_CHAR,image, 3840/6*3840, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
+    MPI_Gather(petite_image, h / p * w, MPI_UNSIGNED_CHAR, image, h / p * w, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
 
-    if(my_rank==0){
+    if (my_rank == 0)
+    {
+
+        // calcul les lignes manque
+
+        int index_ligne_non_calcule = p * ((int)h / (int)p);
+        printf("index non%d\n", index_ligne_non_calcule);
+
+        double y = ymin + ((ymax - ymin) / p) * index_ligne_non_calcule;
+
+
+        printf("h : %d, p : %d\n",h,p);
+
+        for (int i = 0; i < h ; i++)
+        {
+            printf("bonus ,w=%d, y=%lf",w,y);
+            double x = xmin;
+
+            for (int j = 0; j < w; j++)
+            {
+                image[j +(i) * w] = 100;//xy2color(x, y, depth)+10;
+                x += xinc;
+                printf("calcul bonus [%d][%d]\n", i, j);
+            }
+            y += yinc;
+        }
+
         /* Save the image in the output file "mandel.ras" */
         save_rasterfile("mandel.ras", w, h, image);
     }
-
-    
 
     MPI_Finalize();
     return 0;
