@@ -1,0 +1,291 @@
+1)
+
+On peut diviser l'image en autant de core qu'on a a notre disposition et calculer parallement pour chaque partie.
+
+
+
+
+
+
+
+
+Sur 100 core sur rennes
+
+
+oarsub -l core=100,walltime=0:20 -I
+mpiexec --mca pml ^ucx --hostfile $OAR_NODEFILE ./mandel 3840 3840 0.35 0.355 0.353 0.358 50
+
+liste des machines 
+
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-2.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-3.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paranoia-8.rennes.grid5000.fr
+paravance-25.rennes.grid5000.fr
+paravance-25.rennes.grid5000.fr
+paravance-25.rennes.grid5000.fr
+paravance-25.rennes.grid5000.fr
+paravance-25.rennes.grid5000.fr
+paravance-25.rennes.grid5000.fr
+paravance-25.rennes.grid5000.fr
+paravance-25.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-46.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+paravance-69.rennes.grid5000.fr
+
+
+avec 100 sur rennes
+
+Total computing time: 0.0456631 sec
+Total computing time: 0.0460889 sec
+Total computing time: 0.047909 sec
+Total computing time: 0.04842 sec
+Total computing time: 0.0484519 sec
+Total computing time: 0.048512 sec
+Total computing time: 0.048439 sec
+Total computing time: 0.048666 sec
+Total computing time: 0.0488179 sec
+Total computing time: 0.048816 sec
+Total computing time: 0.0490479 sec
+Total computing time: 0.049444 sec
+Total computing time: 0.0493999 sec
+Total computing time: 0.0500629 sec
+Total computing time: 0.0512261 sec
+Total computing time: 0.0525589 sec
+Total computing time: 0.052645 sec
+Total computing time: 0.0530171 sec
+Total computing time: 0.0531399 sec
+Total computing time: 0.053175 sec
+Total computing time: 0.053062 sec
+Total computing time: 0.0534 sec
+Total computing time: 0.053545 sec
+Total computing time: 0.053654 sec
+Total computing time: 0.0544958 sec
+Total computing time: 0.054785 sec
+Total computing time: 0.0550351 sec
+Total computing time: 0.0549939 sec
+Total computing time: 0.055455 sec
+Total computing time: 0.05583 sec
+Total computing time: 0.056376 sec
+Total computing time: 0.057055 sec
+Total computing time: 0.05668 sec
+Total computing time: 0.0568759 sec
+Total computing time: 0.0572078 sec
+Total computing time: 0.0583439 sec
+Total computing time: 0.05776 sec
+Total computing time: 0.0587831 sec
+Total computing time: 0.059444 sec
+Total computing time: 0.0590281 sec
+Total computing time: 0.059413 sec
+Total computing time: 0.0601149 sec
+Total computing time: 0.0604491 sec
+Total computing time: 0.059958 sec
+Total computing time: 0.060477 sec
+Total computing time: 0.0607672 sec
+Total computing time: 0.0609879 sec
+Total computing time: 0.0606189 sec
+Total computing time: 0.0610101 sec
+Total computing time: 0.0615609 sec
+Total computing time: 0.0613809 sec
+Total computing time: 0.061579 sec
+Total computing time: 0.0616758 sec
+Total computing time: 0.061842 sec
+Total computing time: 0.062288 sec
+Total computing time: 0.0623581 sec
+Total computing time: 0.0634031 sec
+Total computing time: 0.0629761 sec
+Total computing time: 0.063066 sec
+Total computing time: 0.0498102 sec
+Total computing time: 0.0653639 sec
+Total computing time: 0.0506258 sec
+Total computing time: 0.050884 sec
+Total computing time: 0.0659921 sec
+Total computing time: 0.0661552 sec
+Total computing time: 0.051415 sec
+Total computing time: 0.066318 sec
+Total computing time: 0.0518699 sec
+Total computing time: 0.0519199 sec
+Total computing time: 0.0520999 sec
+Total computing time: 0.0522449 sec
+Total computing time: 0.0677412 sec
+Total computing time: 0.067188 sec
+Total computing time: 0.0675392 sec
+Total computing time: 0.0526972 sec
+Total computing time: 0.0529962 sec
+Total computing time: 0.0679059 sec
+Total computing time: 0.068048 sec
+Total computing time: 0.053262 sec
+Total computing time: 0.068063 sec
+Total computing time: 0.0687292 sec
+Total computing time: 0.068254 sec
+Total computing time: 0.068907 sec
+Total computing time: 0.0535409 sec
+Total computing time: 0.0541639 sec
+Total computing time: 0.0690949 sec
+Total computing time: 0.0691988 sec
+Total computing time: 0.054462 sec
+Total computing time: 0.069427 sec
+Total computing time: 0.069715 sec
+Total computing time: 0.07096 sec
+Total computing time: 0.071223 sec
+Total computing time: 0.05656 sec
+Total computing time: 0.056787 sec
+Total computing time: 0.0720599 sec
+Total computing time: 0.0572889 sec
+Total computing time: 0.0729921 sec
+Total computing time: 0.0579371 sec
+Total computing time: 0.0583391 sec
+Total computing time: 0.0590851 sec
+
+
+avec 50 sur rennes
+
+Total computing time: 0.096776 sec
+Total computing time: 0.096837 sec
+Total computing time: 0.0972769 sec
+Total computing time: 0.097291 sec
+Total computing time: 0.09779 sec
+Total computing time: 0.0986731 sec
+Total computing time: 0.101396 sec
+Total computing time: 0.10202 sec
+Total computing time: 0.101794 sec
+Total computing time: 0.103214 sec
+Total computing time: 0.105937 sec
+Total computing time: 0.108351 sec
+Total computing time: 0.101031 sec
+Total computing time: 0.102231 sec
+Total computing time: 0.103353 sec
+Total computing time: 0.113852 sec
+Total computing time: 0.103935 sec
+Total computing time: 0.105186 sec
+Total computing time: 0.115781 sec
+Total computing time: 0.106362 sec
+Total computing time: 0.122117 sec
+Total computing time: 0.122595 sec
+Total computing time: 0.124829 sec
+Total computing time: 0.114269 sec
+Total computing time: 0.116101 sec
+Total computing time: 0.126863 sec
+Total computing time: 0.128078 sec
+Total computing time: 0.119283 sec
+Total computing time: 0.130569 sec
+Total computing time: 0.120283 sec
+Total computing time: 0.121662 sec
+Total computing time: 0.122205 sec
+Total computing time: 0.124206 sec
+Total computing time: 0.124464 sec
+Total computing time: 0.125045 sec
+Total computing time: 0.125297 sec
+Total computing time: 0.125807 sec
+Total computing time: 0.126135 sec
+Total computing time: 0.12621 sec
+Total computing time: 0.12701 sec
+Total computing time: 0.126704 sec
+Total computing time: 0.127297 sec
+Total computing time: 0.127793 sec
+Total computing time: 0.129352 sec
+Total computing time: 0.129643 sec
+Total computing time: 0.129755 sec
+Total computing time: 0.12982 sec
+Total computing time: 0.130256 sec
+Total computing time: 0.132189 sec
+Total computing time: 0.133196 sec
+
+avec 8 sur rennes
+
+Total computing time: 0.590467 sec
+Total computing time: 0.604939 sec
+Total computing time: 0.635523 sec
+Total computing time: 0.657785 sec
+Total computing time: 0.715432 sec
+Total computing time: 0.732819 sec
+Total computing time: 0.773091 sec
+Total computing time: 0.788235 sec
+
+
+
