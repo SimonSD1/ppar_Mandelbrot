@@ -7,6 +7,7 @@
 #include <math.h> /* compile with -lm */
 #include <sys/time.h>
 #include <arpa/inet.h> /* htonl */
+#include <mpi.h>
 
 #include "rasterfile.h"
 
@@ -133,6 +134,21 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    int my_rank; /* rank of the process */
+    int p;       /* number of processes */
+    int source;  /* rank of the source */
+    int dest;    /* rank of the receiver */
+    int tag = 0; /* tag of the message */
+
+    MPI_Status status;
+    /* Initialisation */
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &p);
+
+    printf("il y a %d process disponible\n", p);
+    printf("mon rang est %d\n",my_rank);
+
     /* Default values for the fractal */
     double xmin = -2; /* Domain of computation, in the complex plane */
     double ymin = -2;
@@ -170,6 +186,10 @@ int main(int argc, char **argv)
 
     /* Allocate memory for the output array */
     unsigned char *image = malloc(w * h);
+
+    unsigned char *petite_image = malloc(w * h/p);
+    
+    
     if (image == NULL)
     {
         perror("Error while allocating memory for array: ");
@@ -179,24 +199,43 @@ int main(int argc, char **argv)
     /* start timer */
     double start = wallclock_time();
 
+    // image de 3840*3840
+    // le proc 0 calcul de 0 a 3840/6
+    // le proc 1 calcul de 3840/6 * rank a 3840/6 * (rank+1)
+    // le proc n calcul de 30840/6 * rank a 3840/6 *(rank+1)
+
     /* Process the grid point by point */
-    double y = ymin;
-    for (int i = 0; i < h; i++)
+
+
+    double y = ymin+((ymax-ymin)/p)*my_rank;
+    
+    for (int i = 0; i < h/p; i++)
     {
         double x = xmin;
+        
+    
         for (int j = 0; j < w; j++)
         {
-            image[j + i * w] = xy2color(x, y, depth);
+            petite_image[j + i * w] = xy2color(x, y, depth);
             x += xinc;
         }
         y += yinc;
     }
 
+
     /* stop timer */
     double end = wallclock_time();
     fprintf(stderr, "Total computing time: %g sec\n", end - start);
 
-    /* Save the image in the output file "mandel.ras" */
-    save_rasterfile("mandel.ras", w, h, image);
+    MPI_Gather(petite_image,3840/6*3840, MPI_CHAR,image, 3840/6*3840, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
+
+    if(my_rank==0){
+        /* Save the image in the output file "mandel.ras" */
+        save_rasterfile("mandel.ras", w, h, image);
+    }
+
+    
+
+    MPI_Finalize();
     return 0;
 }
