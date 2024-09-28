@@ -169,9 +169,7 @@ int main(int argc, char **argv)
     if (argc > 7)
         depth = atoi(argv[7]);
 
-    /* Computing steps for increments */
-    double xinc = (xmax - xmin) / (w - 1);
-    double yinc = (ymax - ymin) / (h - 1);
+    
 
     /* show parameters, for verification */
     //fprintf(stderr, "Domain: [%g,%g] x [%g,%g]\n", xmin, ymin, xmax, ymax);
@@ -200,7 +198,7 @@ int main(int argc, char **argv)
         padded_h=h;
     }
 
-    printf("padded h %d, h %d",padded_h, h);
+    //printf("padded h %d, h %d",padded_h, h);
 
     /* Allocate memory for the output array */
     unsigned char *image = malloc(w * padded_h);
@@ -213,8 +211,19 @@ int main(int argc, char **argv)
 
     unsigned char *petite_image = malloc(w * padded_h / p);
 
+    //pb dans le y parce que l'image est plus grande que ca
+    //printf("ymax :%lf\n",ymax);
+    ymax = ymax*((double)padded_h/(double)h);
+    //printf("nouveau ymax : %lf\n",ymax);
+
+    /* Computing steps for increments */
+    
+    
+    double xinc = (xmax - xmin) / (w - 1);
+    double yinc = (ymax - ymin) / (padded_h - 1);
     double y = ymin + ((ymax - ymin) / p) * my_rank;
 
+    //printf("padded_h/p %d\n",padded_h/p);
     for (int i = 0; i < padded_h / p; i++)
     {
         double x = xmin;
@@ -222,6 +231,9 @@ int main(int argc, char **argv)
         for (int j = 0; j < w; j++)
         {
             petite_image[j + i * w] = xy2color(x, y, depth);
+            //printf("calcul de i:%d, j:%d\n",i,j);
+            //printf("calcul de x:%lf, y:%lf\n",x,y);
+            //printf("resultat : %d\n", petite_image[j + i * w]);
             x += xinc;
         }
         y += yinc;
@@ -238,6 +250,13 @@ int main(int argc, char **argv)
         ///* Save the image in the output file "mandel.ras" */
         // ici on ecrit l'image avec les dimensions originales
         // pour effacer le padding
+
+        for(int i=0; i<h; i++){
+            for(int j=0; j<w; j++){
+                printf("%u ",image[ j + i*w]);
+            }
+            printf("\n");
+        }
         save_rasterfile("mandel.ras", w, h, image);
     }
 
