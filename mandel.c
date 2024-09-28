@@ -198,7 +198,7 @@ int main(int argc, char **argv)
         padded_h=h;
     }
 
-    printf("padded h %d, h %d",padded_h, h);
+    //printf("padded h %d, h %d",padded_h, h);
 
     /* Allocate memory for the output array */
     unsigned char *image = malloc(w * padded_h);
@@ -241,7 +241,7 @@ int main(int argc, char **argv)
     
     /* stop timer */
     double end = wallclock_time();
-    fprintf(stderr, "Total computing time: %g sec\n", end - start);
+    fprintf(stdout, "Total computing time: %g sec\n", end - start);
 
     MPI_Gather(petite_image, padded_h / p * w, MPI_UNSIGNED_CHAR, image, padded_h / p * w, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
 
@@ -251,6 +251,8 @@ int main(int argc, char **argv)
         // ici on ecrit l'image avec les dimensions originales
         // pour effacer le padding
         save_rasterfile("mandel.ras", w, h, image);
+        end=wallclock_time();
+        fprintf(stdout, "temps apres l'ecriture de l'image %g sec\n",end-start);
     }
 
     MPI_Finalize();

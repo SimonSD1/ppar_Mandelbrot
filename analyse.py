@@ -31,11 +31,9 @@ plt.xlabel('Number of Processors (n)')
 plt.ylabel('Total Computing Time (seconds)')
 plt.title('MPI Performance: Computing Time vs Number of Processors')
 
-# Optional: Add grid and legend
 plt.grid(True)
 plt.legend()
 
-# Step 4: Show the plot
 plt.savefig("plot.png")
 
 
