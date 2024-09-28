@@ -19,7 +19,8 @@ Sur 100 core sur rennes
 
 compiler avec -O3 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-oarsub -l core=100,walltime=0:20 -I
+oarsub -l core=100,walltime=0:30 -I
+compilation : mpicc 
 mpiexec --mca pml ^ucx --hostfile $OAR_NODEFILE ./mandel 3840 3840 0.35 0.355 0.353 0.358 50
 
 liste des machines 

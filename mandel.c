@@ -198,7 +198,7 @@ int main(int argc, char **argv)
         padded_h=h;
     }
 
-    //printf("padded h %d, h %d",padded_h, h);
+    printf("padded h %d, h %d",padded_h, h);
 
     /* Allocate memory for the output array */
     unsigned char *image = malloc(w * padded_h);
@@ -250,13 +250,6 @@ int main(int argc, char **argv)
         ///* Save the image in the output file "mandel.ras" */
         // ici on ecrit l'image avec les dimensions originales
         // pour effacer le padding
-
-        for(int i=0; i<h; i++){
-            for(int j=0; j<w; j++){
-                printf("%u ",image[ j + i*w]);
-            }
-            printf("\n");
-        }
         save_rasterfile("mandel.ras", w, h, image);
     }
 
