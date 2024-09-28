@@ -136,18 +136,12 @@ int main(int argc, char **argv)
 
     int my_rank; /* rank of the process */
     int p;       /* number of processes */
-    int source;  /* rank of the source */
-    int dest;    /* rank of the receiver */
-    int tag = 0; /* tag of the message */
 
     MPI_Status status;
     /* Initialisation */
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     MPI_Comm_size(MPI_COMM_WORLD, &p);
-
-    printf("il y a %d process disponible\n", p);
-    printf("mon rang est %d\n", my_rank);
 
     /* Default values for the fractal */
     double xmin = -2; /* Domain of computation, in the complex plane */
@@ -156,6 +150,7 @@ int main(int argc, char **argv)
     double ymax = 2;
     int w = 3840; /* dimensions of the image (4K HTDV!) */
     int h = 3840;
+    int padded_h;
     int depth = 10000; /* depth of iteration */
 
     /* Retrieving parameters */
@@ -179,21 +174,12 @@ int main(int argc, char **argv)
     double yinc = (ymax - ymin) / (h - 1);
 
     /* show parameters, for verification */
-    fprintf(stderr, "Domain: [%g,%g] x [%g,%g]\n", xmin, ymin, xmax, ymax);
-    fprintf(stderr, "Increment: %g, %g\n", xinc, yinc);
-    fprintf(stderr, "depth: %d\n", depth);
-    fprintf(stderr, "Image size: %d x %d\n", w, h);
+    //fprintf(stderr, "Domain: [%g,%g] x [%g,%g]\n", xmin, ymin, xmax, ymax);
+    //fprintf(stderr, "Increment: %g, %g\n", xinc, yinc);
+    //fprintf(stderr, "depth: %d\n", depth);
+    //fprintf(stderr, "Image size: %d x %d\n", w, h);
 
-    /* Allocate memory for the output array */
-    unsigned char *image = malloc(w * h);
-
-    unsigned char *petite_image = malloc(w * h / p);
-
-    if (image == NULL)
-    {
-        perror("Error while allocating memory for array: ");
-        exit(1);
-    }
+    
 
     /* start timer */
     double start = wallclock_time();
@@ -205,9 +191,31 @@ int main(int argc, char **argv)
 
     /* Process the grid point by point */
 
+
+    // si la hauteur de l'image n'est pas un multiple de p
+    if(h%p!=0){
+        padded_h=h+(p-h%p);
+    }
+    else{
+        padded_h=h;
+    }
+
+    printf("padded h %d, h %d",padded_h, h);
+
+    /* Allocate memory for the output array */
+    unsigned char *image = malloc(w * padded_h);
+
+    if (image == NULL)
+    {
+        perror("Error while allocating memory for array: ");
+        exit(1);
+    }
+
+    unsigned char *petite_image = malloc(w * padded_h / p);
+
     double y = ymin + ((ymax - ymin) / p) * my_rank;
 
-    for (int i = 0; i < h / p; i++)
+    for (int i = 0; i < padded_h / p; i++)
     {
         double x = xmin;
 
@@ -215,7 +223,6 @@ int main(int argc, char **argv)
         {
             petite_image[j + i * w] = xy2color(x, y, depth);
             x += xinc;
-            printf("calcul [%d][%d]\n", i, j);
         }
         y += yinc;
     }
@@ -224,36 +231,13 @@ int main(int argc, char **argv)
     double end = wallclock_time();
     fprintf(stderr, "Total computing time: %g sec\n", end - start);
 
-    MPI_Gather(petite_image, h / p * w, MPI_UNSIGNED_CHAR, image, h / p * w, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
+    MPI_Gather(petite_image, padded_h / p * w, MPI_UNSIGNED_CHAR, image, padded_h / p * w, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0)
     {
-
-        // calcul les lignes manque
-
-        int index_ligne_non_calcule = p * ((int)h / (int)p);
-        printf("index non%d\n", index_ligne_non_calcule);
-
-        double y = ymin + ((ymax - ymin) / p) * index_ligne_non_calcule;
-
-
-        printf("h : %d, p : %d\n",h,p);
-
-        for (int i = 0; i < h ; i++)
-        {
-            printf("bonus ,w=%d, y=%lf",w,y);
-            double x = xmin;
-
-            for (int j = 0; j < w; j++)
-            {
-                image[j +(i) * w] = 100;//xy2color(x, y, depth)+10;
-                x += xinc;
-                printf("calcul bonus [%d][%d]\n", i, j);
-            }
-            y += yinc;
-        }
-
-        /* Save the image in the output file "mandel.ras" */
+        ///* Save the image in the output file "mandel.ras" */
+        // ici on ecrit l'image avec les dimensions originales
+        // pour effacer le padding
         save_rasterfile("mandel.ras", w, h, image);
     }
 
