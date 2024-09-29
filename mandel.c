@@ -241,7 +241,7 @@ int main(int argc, char **argv)
     
     /* stop timer */
     double end = wallclock_time();
-    fprintf(stdout, "Total computing time: %g sec\n", end - start);
+    //fprintf(stdout, "Total computing time: %g sec\n", end - start);
 
     MPI_Gather(petite_image, padded_h / p * w, MPI_UNSIGNED_CHAR, image, padded_h / p * w, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
 
