@@ -169,15 +169,11 @@ int main(int argc, char **argv)
     if (argc > 7)
         depth = atoi(argv[7]);
 
-    
-
     /* show parameters, for verification */
-    //fprintf(stderr, "Domain: [%g,%g] x [%g,%g]\n", xmin, ymin, xmax, ymax);
-    //fprintf(stderr, "Increment: %g, %g\n", xinc, yinc);
-    //fprintf(stderr, "depth: %d\n", depth);
-    //fprintf(stderr, "Image size: %d x %d\n", w, h);
-
-    
+    // fprintf(stderr, "Domain: [%g,%g] x [%g,%g]\n", xmin, ymin, xmax, ymax);
+    // fprintf(stderr, "Increment: %g, %g\n", xinc, yinc);
+    // fprintf(stderr, "depth: %d\n", depth);
+    // fprintf(stderr, "Image size: %d x %d\n", w, h);
 
     /* start timer */
     double start = wallclock_time();
@@ -189,16 +185,18 @@ int main(int argc, char **argv)
 
     /* Process the grid point by point */
 
-
     // si la hauteur de l'image n'est pas un multiple de p
-    if(h%p!=0){
-        padded_h=h+(p-h%p);
+    if (h % p != 0)
+    {
+        padded_h = h + (p - h % p);
+        printf("padding effecetue");
     }
-    else{
-        padded_h=h;
+    else
+    {
+        padded_h = h;
     }
 
-    //printf("padded h %d, h %d",padded_h, h);
+    // printf("padded h %d, h %d",padded_h, h);
 
     /* Allocate memory for the output array */
     unsigned char *image = malloc(w * padded_h);
@@ -211,19 +209,18 @@ int main(int argc, char **argv)
 
     unsigned char *petite_image = malloc(w * padded_h / p);
 
-    //pb dans le y parce que l'image est plus grande que ca
-    //printf("ymax :%lf\n",ymax);
-    ymax = ymax*((double)padded_h/(double)h);
-    //printf("nouveau ymax : %lf\n",ymax);
+    // pb dans le y parce que l'image est plus grande que ca
+    // printf("ymax :%lf\n",ymax);
+    ymax = ymax * ((double)padded_h / (double)h);
+    printf("nouveau ymax : %lf\n", ymax);
 
     /* Computing steps for increments */
-    
-    
+
     double xinc = (xmax - xmin) / (w - 1);
     double yinc = (ymax - ymin) / (padded_h - 1);
     double y = ymin + ((ymax - ymin) / p) * my_rank;
 
-    //printf("padded_h/p %d\n",padded_h/p);
+    printf("padded_h/p %d\n", padded_h / p);
     for (int i = 0; i < padded_h / p; i++)
     {
         double x = xmin;
@@ -231,28 +228,38 @@ int main(int argc, char **argv)
         for (int j = 0; j < w; j++)
         {
             petite_image[j + i * w] = xy2color(x, y, depth);
-            //printf("calcul de i:%d, j:%d\n",i,j);
-            //printf("calcul de x:%lf, y:%lf\n",x,y);
-            //printf("resultat : %d\n", petite_image[j + i * w]);
+
             x += xinc;
         }
         y += yinc;
     }
-    
+
     /* stop timer */
     double end = wallclock_time();
-    //fprintf(stdout, "Total computing time: %g sec\n", end - start);
+    printf("Total computing time: %g sec\n", end - start);
 
-    MPI_Gather(petite_image, padded_h / p * w, MPI_UNSIGNED_CHAR, image, padded_h / p * w, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
+    //printf("taille envoye : %d\n", padded_h / p * w);
+    MPI_Gather(petite_image, (padded_h / p) * w, MPI_UNSIGNED_CHAR, image, (padded_h / p) * w, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0)
     {
+
+        printf("h : %d\n", h);
+        printf("w : %d\n", w);
+        for (int i = 0; i < h; i++)
+        {
+            for (int j = 0; j < w; j++)
+            {
+                printf("%u ", image[j + i * w]);
+            }
+            printf("\n");
+        }
         ///* Save the image in the output file "mandel.ras" */
         // ici on ecrit l'image avec les dimensions originales
         // pour effacer le padding
         save_rasterfile("mandel.ras", w, h, image);
-        end=wallclock_time();
-        fprintf(stdout, "temps apres l'ecriture de l'image %g sec\n",end-start);
+        end = wallclock_time();
+        printf("temps apres l'ecriture de l'image %g sec\n", end - start);
     }
 
     MPI_Finalize();
