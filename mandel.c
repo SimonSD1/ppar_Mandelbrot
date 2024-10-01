@@ -178,11 +178,6 @@ int main(int argc, char **argv)
     /* start timer */
     double start = wallclock_time();
 
-    // image de 3840*3840
-    // le proc 0 calcul de 0 a 3840/6
-    // le proc 1 calcul de 3840/6 * rank a 3840/6 * (rank+1)
-    // le proc n calcul de 30840/6 * rank a 3840/6 *(rank+1)
-
     /* Process the grid point by point */
 
     // si la hauteur de l'image n'est pas un multiple de p
@@ -196,7 +191,6 @@ int main(int argc, char **argv)
         padded_h = h;
     }
 
-    // printf("padded h %d, h %d",padded_h, h);
 
     /* Allocate memory for the output array */
     unsigned char *image = malloc(w * padded_h);
@@ -209,10 +203,7 @@ int main(int argc, char **argv)
 
     unsigned char *petite_image = malloc(w * padded_h / p);
 
-    // pb dans le y parce que l'image est plus grande que ca
-    // printf("ymax :%lf\n",ymax);
     ymax = ymax * ((double)padded_h / (double)h);
-    printf("nouveau ymax : %lf\n", ymax);
 
     /* Computing steps for increments */
 
@@ -224,6 +215,12 @@ int main(int argc, char **argv)
     for (int i = 0; i < padded_h / p; i++)
     {
         double x = xmin;
+
+        int ligne_global=my_rank*(padded_h/p)+i;
+
+        if(ligne_global>h){
+            continue;
+        }
 
         for (int j = 0; j < w; j++)
         {
@@ -238,7 +235,6 @@ int main(int argc, char **argv)
     double end = wallclock_time();
     printf("Total computing time: %g sec\n", end - start);
 
-    //printf("taille envoye : %d\n", padded_h / p * w);
     MPI_Gather(petite_image, (padded_h / p) * w, MPI_UNSIGNED_CHAR, image, (padded_h / p) * w, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0)
