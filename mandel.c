@@ -239,23 +239,9 @@ int main(int argc, char **argv)
 
     if (my_rank == 0)
     {
-
-        printf("h : %d\n", h);
-        printf("w : %d\n", w);
-        for (int i = 0; i < h; i++)
-        {
-            for (int j = 0; j < w; j++)
-            {
-                printf("%u ", image[j + i * w]);
-            }
-            printf("\n");
-        }
         ///* Save the image in the output file "mandel.ras" */
-        // ici on ecrit l'image avec les dimensions originales
-        // pour effacer le padding
         save_rasterfile("mandel.ras", w, h, image);
         end = wallclock_time();
-        printf("temps apres l'ecriture de l'image %g sec\n", end - start);
     }
 
     MPI_Finalize();
