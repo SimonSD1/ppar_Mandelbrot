@@ -127,7 +127,7 @@ int main(int argc, char **argv)
     double ymax = 2;
     int w = 1000;
     int h = 1000;
-    int paddedH = h;
+    
     int depth = 100;
 
 
@@ -147,7 +147,8 @@ int main(int argc, char **argv)
 	if (argc > 7)
 		depth = atoi(argv[7]);
 
-    int nbTiles = 1000;
+    int nbTiles = h;
+    int paddedH = h;
 
     // on gere le padding
     if (h % nbTiles != 0)
@@ -232,6 +233,10 @@ int main(int argc, char **argv)
             for (int i = 0; i < linesPerTiles; i++)
             {
                 double x = xmin;
+
+                if(i*lineToWorkOn>h){
+                    break;
+                }
                 for (int j = 0; j < w; j++)
                 {
                     localImage[j + i * w] = xy2color(x, y, depth);
