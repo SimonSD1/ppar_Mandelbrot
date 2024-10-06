@@ -147,7 +147,9 @@ int main(int argc, char **argv)
 	if (argc > 7)
 		depth = atoi(argv[7]);
 
+    // decoupage de l'image
     int nbTiles = h;
+
     int paddedH = h;
 
     // on gere le padding
