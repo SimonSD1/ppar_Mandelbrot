@@ -1,4 +1,4 @@
 -lm
 .vscode/
 mandel
-mandel.ras
+*.ras
