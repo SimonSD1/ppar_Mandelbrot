@@ -211,7 +211,7 @@ int main(int argc, char **argv)
             MPI_Isend(&stop, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &request);
         }
 
-        save_rasterfile("mandel.ras", w, h, image);
+        save_rasterfile("mandelTP2.ras", w, h, image);
         /* stop timer */
         double end = wallclock_time();
         fprintf(stderr, "Total computing time: %g sec\n", end - start);
@@ -236,7 +236,7 @@ int main(int argc, char **argv)
             {
                 double x = xmin;
 
-                if(i*lineToWorkOn>h){
+                if(linesPerTiles * lineToWorkOn + i>=h){
                     break;
                 }
                 for (int j = 0; j < w; j++)
