@@ -34,9 +34,9 @@ unsigned char cos_component(int i, double freq)
 
 double wallclock_time()
 {
-	struct timeval tmp_time;
-	gettimeofday(&tmp_time, NULL);
-	return tmp_time.tv_sec + (tmp_time.tv_usec * 1.0e-6);
+    struct timeval tmp_time;
+    gettimeofday(&tmp_time, NULL);
+    return tmp_time.tv_sec + (tmp_time.tv_usec * 1.0e-6);
 }
 
 void save_rasterfile(char *name, int largeur, int hauteur, unsigned char *p)
@@ -107,10 +107,11 @@ int main(int argc, char **argv)
 {
     MPI_Init(&argc, &argv);
 
-    if (argc == 1) {
-		fprintf(stderr, "%s\n", info);
-		return 1;
-	}
+    if (argc == 1)
+    {
+        fprintf(stderr, "%s\n", info);
+        return 1;
+    }
 
     int my_rank;
     int nbProcess;
@@ -118,34 +119,30 @@ int main(int argc, char **argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     MPI_Comm_size(MPI_COMM_WORLD, &nbProcess);
 
-    MPI_Status status;
-    MPI_Request request;
-
     double xmin = -2; /* Domain of computation, in the complex plane */
     double ymin = -2;
     double xmax = 2;
     double ymax = 2;
     int w = 1000;
     int h = 1000;
-    
+
     int depth = 100;
 
-
     /* Retrieving parameters */
-	if (argc > 1)
-		w = atoi(argv[1]);
-	if (argc > 2)
-		h = atoi(argv[2]);
-	if (argc > 3)
-		xmin = atof(argv[3]);
-	if (argc > 4)
-		ymin = atof(argv[4]);
-	if (argc > 5)
-		xmax = atof(argv[5]);
-	if (argc > 6)
-		ymax = atof(argv[6]);
-	if (argc > 7)
-		depth = atoi(argv[7]);
+    if (argc > 1)
+        w = atoi(argv[1]);
+    if (argc > 2)
+        h = atoi(argv[2]);
+    if (argc > 3)
+        xmin = atof(argv[3]);
+    if (argc > 4)
+        ymin = atof(argv[4]);
+    if (argc > 5)
+        xmax = atof(argv[5]);
+    if (argc > 6)
+        ymax = atof(argv[6]);
+    if (argc > 7)
+        depth = atoi(argv[7]);
 
     // decoupage de l'image
     int nbTiles = h;
@@ -173,6 +170,8 @@ int main(int argc, char **argv)
 
     if (my_rank == 0)
     {
+        MPI_Status status;
+        MPI_Request request;
 
         /* start timer */
         double start = wallclock_time();
@@ -204,11 +203,11 @@ int main(int argc, char **argv)
                 MPI_Isend(&tilesSent, 1, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD, &request);
                 tilesSent++;
             }
-        }
-
-        for (int i = 1; i < nbProcess; i++)
-        {
-            MPI_Isend(&stop, 1, MPI_INT, i, 0, MPI_COMM_WORLD, &request);
+            else
+            {
+                MPI_Isend(&stop, 1, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD, &request);
+                MPI_Wait(&request,&status);
+            }
         }
 
         save_rasterfile("mandelTP2.ras", w, h, image);
@@ -220,11 +219,15 @@ int main(int argc, char **argv)
     {
         int lineToWorkOn;
         unsigned char *localImage = malloc(pixelPerTiles * sizeof(unsigned char));
+        MPI_Status statusSend;
+        MPI_Request requestSend;
+        MPI_Status statusRcv;
+        MPI_Request requestRcv;
         while (1)
         {
-            MPI_Irecv(&lineToWorkOn, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &request);
+            MPI_Irecv(&lineToWorkOn, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, &requestRcv);
 
-            MPI_Wait(&request, &status);
+            MPI_Wait(&requestRcv, &statusRcv);
 
             if (lineToWorkOn == -1)
             {
@@ -236,7 +239,8 @@ int main(int argc, char **argv)
             {
                 double x = xmin;
 
-                if(linesPerTiles * lineToWorkOn + i>=h){
+                if (linesPerTiles * lineToWorkOn + i >= h)
+                {
                     break;
                 }
                 for (int j = 0; j < w; j++)
@@ -247,7 +251,7 @@ int main(int argc, char **argv)
                 y += yinc;
             }
 
-            MPI_Isend(localImage, pixelPerTiles, MPI_UNSIGNED_CHAR, 0, lineToWorkOn, MPI_COMM_WORLD, &request);
+            MPI_Isend(localImage, pixelPerTiles, MPI_UNSIGNED_CHAR, 0, lineToWorkOn, MPI_COMM_WORLD, &requestSend);
         }
     }
 
