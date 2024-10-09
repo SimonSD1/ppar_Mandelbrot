@@ -196,17 +196,29 @@ int main(int argc, char **argv)
             MPI_Wait(&request, &status);
             tilesReceive++;
 
+            // se declenche parfois
+            if (status.MPI_TAG * pixelPerTiles >= paddedH * w)
+            {
+                fprintf(stderr, "Invalid index for memcpy: %d\n", status.MPI_TAG);
+                MPI_Abort(MPI_COMM_WORLD, 1);
+            }
+
             memcpy(&image[status.MPI_TAG * pixelPerTiles], tempImage, pixelPerTiles);
 
             if (tilesSent < nbTiles)
             {
+                if (tilesSent >= h)
+                {
+                    fprintf(stderr, "Invalid index for memcpy dans le send: %d\n", status.MPI_TAG);
+                    MPI_Abort(MPI_COMM_WORLD, 1);
+                }
                 MPI_Isend(&tilesSent, 1, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD, &request);
                 tilesSent++;
             }
             else
             {
-                MPI_Isend(&stop, 1, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD, &request);
-                MPI_Wait(&request,&status);
+                // printf("stop %p, status %p, request %p", &stop, status, request);
+                MPI_Send(&stop, 1, MPI_INT, status.MPI_SOURCE, 0, MPI_COMM_WORLD);
             }
         }
 
@@ -232,6 +244,12 @@ int main(int argc, char **argv)
             if (lineToWorkOn == -1)
             {
                 break;
+            }
+
+            if (lineToWorkOn >= h)
+            {
+                fprintf(stderr, "Invalid index for memcpy dans le worker: %d\n", statusRcv.MPI_TAG);
+                MPI_Abort(MPI_COMM_WORLD, 1);
             }
 
             double y = ymin + (linesPerTiles * lineToWorkOn) * yinc;
