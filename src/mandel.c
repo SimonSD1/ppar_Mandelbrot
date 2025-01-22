@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <arpa/inet.h> /* htonl */
 
-#include "rasterfile.h"
+#include "../include/rasterfile.h"
 
 char info[] = "\
 Usage:\n\
@@ -231,7 +231,6 @@ int main(int argc, char **argv)
     {
         int lineToWorkOn;
         unsigned char *localImage = malloc(pixelPerTiles * sizeof(unsigned char));
-        MPI_Status statusSend;
         MPI_Request requestSend;
         MPI_Status statusRcv;
         MPI_Request requestRcv;

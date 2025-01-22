@@ -1,7 +1,16 @@
-# Mandelbrot
+# Mandelbrot MPI Renderer
 
-Premier TP de parallélisation du calcul de l'ensemble de Mandelbrot et analyse des performances.
+This project computes and generates an image of the Mandelbrot set using MPI (Message Passing Interface) for parallel computation. The results are saved as a raster image file.
 
-Compilation : mpicc mandel.c rasterfile.h -o mandel -lm -O3
+## Compilation
 
-Exemple d'éxecution : mpiexec ./mandel 12000 12000 0.35 0.355 0.353 0.358 1000
+To compile the project, you will need:
+- A C compiler (e.g., `gcc`).
+- The MPI library (e.g., OpenMPI or MPICH).
+- The standard math library (`-lm`).
+
+Use the provided `Makefile` to simplify the compilation process.
+
+To run the program: mpiexec -np <number_of_processes> ./mandel <dimx> <dimy> <xmin> <ymin> <xmax> <ymax> <depth>
+
+

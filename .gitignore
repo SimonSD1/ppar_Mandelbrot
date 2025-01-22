@@ -1,5 +1,22 @@
--lm
-.vscode/
+# Ignore compiled binary files
+/bin/
 mandel
+
+# Ignore object files
+*.o
+
+# Ignore temporary or backup files
+*.swp
+*.swo
+*~
+*.tmp
+
+# Ignore build artifacts
 *.ras
-mandelTP2
+
+# Ignore logs and debugging files
+*.log
+
+# Ignore files created by the Makefile clean target
+clean
+
